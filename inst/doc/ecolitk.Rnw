@@ -169,11 +169,11 @@ legend(0.47, 0.9, legend=lac.symbol, fill=rainbow(4))
 \subsection*{More plots}
 
 The following plot uses several different annotation sources.
-It shows an obvious a spatial pattern: genes annotated as
-- Macromolecules (cellular constituent)  biosynthesis - are
-mostly located on the \verb'+' strand on the first half
-of the chromosome after the ORI (origin of replication), while
-they appear mostly located on the \verb'-' strand on the second half.
+
+It tries to show a spatial pattern for the genes annotated as
+- Macromolecules (cellular constituent)  biosynthesis -.
+In the following plot those genes are plotted according to their
+position on the genome and according to their respective strand.
 <<fig=TRUE>>=
 library(Biobase)
 data(ecoligenomeBNUM2STRAND)
@@ -308,9 +308,7 @@ Since we are going to use Affymetrix data, loading the affy package is needed:
 library(affy)
 @ 
 
-The E. coli data used in the following are freely available at
-\url{http://www.affymetrix.com/support/technical/sample_data/demo_data.affx}
-For convenience, as subset of these data are included in the package:
+A bioconductor package of experimental E.coli data is used:
 <<>>=
 library(ecoliLeucine)
 
@@ -322,11 +320,48 @@ First, one should normalize the data:
 abatch.nqt <- normalize(ecoliLeucine, method="quantiles")
 @ 
 
-The summary statistic for the probe sets can be done simply
+The summary statistics for a probe set can be obtained simply:
 <<>>=
-eset <- computeExprSet(abatch.nqt, pmcorrect.method="pmonly", summary.method="medianpolish", ids=affyoperons[[18]])
+## the operon taken as an example:
+names(affyoperons)[18]
+
+eset <- computeExprSet(abatch.nqt, pmcorrect.method="pmonly", summary.method="medianpolish", ids = affyoperons[[18]]) 
+
+<<>>=
+operons.eset <- computeExprSet(abatch.nqt, pmcorrect.method="pmonly", summary.method="medianpolish", ids = unlist(affyoperons))
 @ 
 
+We assumed that genes within operons should be all differentially
+expressed, or all not differentially expressed. 
+
+<<>>=
+library(multtest)
+
+my.ttest <- function(x, i, j) {
+  pval <- t.test(x[i], x[j])$p.value
+  return(pval)
+}
+
+is.lrpplus <- pData(operons.eset)$strain == "lrp+"
+is.lrpmoins <- pData(operons.eset)$strain == "lrp-"
+
+operons.ttest <- esApply(operons.eset, 1, my.ttest, is.lrpplus, is.lrpmoins)
+
+## adjustment for multiple testing.
+operons.ttest.adj <- mt.rawp2adjp(operons.ttest, "BY")$adjp
+
+## flag whether or not the probeset can be considered differentially expressed
+operons.diff.expr <- operons.ttest.adj < 0.01
+@ 
+
+One needs a little bit of bookkeeping to know what belongs to which operon.
+We can build a list of indexes to know what belongs to where:
+<<>>=
+operons.i <- split(seq(along=operons.ttest), operon.name)
+@ 
+
+The thrill is then to see if the results for differential expression
+(or non-differential expression) are homogeneous among the genes within the same operon\ldots
 
 %% First, we want to apply the vsn transformation to our data:
 %% <<>>=

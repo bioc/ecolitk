@@ -1,10 +1,10 @@
 Package: ecolitk
-Version: 0.2-6
+Version: 0.2-7
 Date: 2004-2
 Title: Meta-data and tools for E. coli 
 Author: Laurent Gautier
 Maintainer: Laurent <laurent@cbs.dtu.dk>
 Depends: R (>= 1.9.0), affy, ecoliLeucine
-Description: Meta-data and tools to work with E. coli. The tools are mostly plotting function to work with circular genomes. They can used with other genomes/plasmids.
+Description: Meta-data and tools to work with E. coli. The tools are mostly plotting functions to work with circular genomes. They can used with other genomes/plasmids.
 License: GPL version 2 or newer
 
