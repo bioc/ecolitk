@@ -7,3 +7,5 @@ Maintainer: Laurent <laurent@cbs.dtu.dk>
 Depends: R (>= 1.9.0), affy, ecoliLeucine
 Description: Meta-data and tools to work with E. coli. The tools are mostly plotting function to work with circular genomes. They can used with other genomes/plasmids.
 License: GPL version 2 or newer
+ReleaseLevel: devel
+
