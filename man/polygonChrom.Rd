@@ -1,5 +1,6 @@
 \name{polygonChrom}
 \alias{polygonChrom}
+\alias{linesChrom}
 \alias{cPlotCircle}
 \alias{chromPos2angle}
 \title{ Functions to plot circular chromosomes informations }
@@ -13,6 +14,12 @@ cPlotCircle(radius=1, xlim=c(-2, 2), ylim=xlim, edges=300, main=NULL,
 chromPos2angle(pos, len.chrom, rot=pi/2, clockwise=TRUE)
 
 polygonChrom(begin, end, len.chrom, radius.in, radius.out,
+             total.edges = 300,
+             edges = max(round(abs(end - begin)/len.chrom *
+                     total.edges), 2, na.rm = TRUE),
+             rot = pi/2, clockwise = TRUE, ...)
+
+linesChrom(begin, end, len.chrom, radius,
              total.edges = 300,
              edges = max(round(abs(end - begin)/len.chrom *
                      total.edges), 2, na.rm = TRUE),

@@ -14,7 +14,7 @@ linesCircle <- function(radius, center.x = 0, center.y = 0, edges=300, ...) {
 }
 
 chromPos2angle <- function(pos, len.chrom, rot=pi/2, clockwise=TRUE) {
-  if (any(abs(pos) > len.chrom))
+  if (any(abs(pos) > len.chrom, na.rm=TRUE))
     warning(paste(pos, ">", len.chrom, ": abs(pos) > len.chrom !!!"))
   
   theta <- pos * 2 * pi / len.chrom
@@ -104,7 +104,32 @@ polygonChrom <- function(begin, end, len.chrom,
   theta0 <- chromPos2angle(begin, len.chrom, rot=rot, clockwise=clockwise)
   theta1 <- chromPos2angle(end, len.chrom, rot=rot, clockwise=clockwise)
 
+  if (any(theta0 == theta1, na.rm=TRUE))
+    warning(paste("identical angles for: ", which(theta0 == theta1), collapse=TRUE))
+  
   polygonArc(theta0, theta1, radius.in, radius.out, edges=edges, ...)
+}
+
+linesChrom <- function(begin, end, len.chrom, radius,
+                       total.edges=300,
+                       edges=max(round(abs(end-begin)/len.chrom* total.edges), 2, na.rm=TRUE),
+                       rot=pi/2, clockwise=TRUE,
+                       ...) {
+
+  theta0 <- chromPos2angle(begin, len.chrom, rot=rot, clockwise=clockwise)
+  theta1 <- chromPos2angle(end, len.chrom, rot=rot, clockwise=clockwise)
+
+  if (any(theta0 == theta1, na.rm=TRUE))
+    warning(paste("identical angles for: ", which(theta0 == theta1), collapse=TRUE))
+
+  if (length(edges) == 1)
+    edges <- rep(edges, length=length(theta0))
+
+  ok <- ! (is.na(theta0) | is.na(theta1))
+  
+  for (i in seq(along=theta0[ok])) {
+    linesArc(theta0[ok][i], theta1[ok][i], rep(radius, edges[ok][i]), ...)
+  }
 }
 
 ecoli.len <- 4639221

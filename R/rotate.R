@@ -5,7 +5,7 @@ xy2polar <- function(x, y) {
   }
   rho <- sqrt(x^2 + y^2)
   theta <- atan(y/x)
-  return(rho=rho, theta=theta)
+  return(list(rho=rho, theta=theta))
 }
 
 polar2xy <- function(rho, theta) {
@@ -15,7 +15,7 @@ polar2xy <- function(rho, theta) {
   }
   x <- rho * cos(theta)
   y <- rho * sin(theta)
-  return(x=x, y=y)
+  return(list(x=x, y=y))
 }
 
 rotate <- function(x, y, alpha) {

@@ -1,4 +1,9 @@
 ecoli.m52.genome        Escherichia coli data
+ecoligenomeBNUM2MULTIFUN
+                        Environment
+ecoligenomeBNUM         Environment for 'bnum' identifiers
+ecoligenome.operon      Known operon in E.coli - data.frame
+gccontent               function to compute gccontent
 pointsCircle            Functions to plot circular related figures
 polar2xy                Functions to perform polar coordinate related
                         functions

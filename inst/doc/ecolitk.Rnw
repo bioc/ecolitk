@@ -31,7 +31,8 @@
 
 \author{Laurent}
 \begin{document}
-\title{A package to work with procaryots}
+\title{A package to work with {\it E. coli} genome (and other circular
+DNA entities)}
 \maketitle
 
 \section*{Introduction}
@@ -46,8 +47,9 @@ because:
 \end{itemize}
 Things will settle in time\ldots
 
-The package focuses on {\it Escherichia coli} but can be used with
-other bacterial genomes or plamids.
+The package contains data on {\it Escherichia coli} but can be used with
+other bacterial genomes or plamids, provided one supplies the required
+data.
 
 To load the package, do:
 \begin{Sinput}
@@ -150,12 +152,64 @@ lac.affy <- lac.affy[lac.o]
 beg.end <- beg.end[lac.o, ]
 @
 
-This done, we plot them as polygons (same shape as preserved pineapple
-in cans).
+This done, we plot them as polygons:
 <<fig=TRUE>>=
-cPlotCircle(main.inside = "E. coli - K12", main="lac genes")
+cPlotCircle(main.inside = "E. coli - K12", main = "lac genes")
 polygonChrom(beg.end[, 1], beg.end[, 2], ecoli.len, 1, 1.4)
 @
+Zoom in can be achieved by playing with \Rfunarg{xlim} and \Rfunarg{ylim}.
+
+<<fig=TRUE>>=
+l <- data.frame(x=c(0.470, 0.48), y=c(0.87, 0.90))
+cPlotCircle(xlim=range(l$x), ylim=range(l$y), main = "lac genes")
+polygonChrom(beg.end[, 1], beg.end[, 2], ecoli.len, 1, 1.007, col=rainbow(4))
+legend(0.47, 0.9, legend=lac.symbol, fill=rainbow(4))
+@ 
+
+\subsection*{More plots}
+
+The following plot uses several different annotation sources.
+It shows an obvious a spatial pattern: genes annotated as
+- Macromolecules (cellular constituent)  biosynthesis - are
+mostly located on the \verb'+' strand on the first half
+of the chromosome after the ORI (origin of replication), while
+they appear mostly located on the \verb'-' strand on the second half.
+<<fig=TRUE>>=
+library(Biobase)
+data(ecoligenomeBNUM2STRAND)
+data(ecoligenomeBNUM)
+data(ecoligenomeBNUM2MULTIFUN)
+data(ecoligenomeCHRLOC)
+
+affyids <- ls(ecoligenomeCHRLOC)
+affypos <- multiget(affyids, ecoligenomeCHRLOC)
+## 'unlist' as the mapping is one-to-one
+bnums <- unlist(multiget(affyids, ecoligenomeBNUM)) 
+strands <- unlist(multiget(bnums, ecoligenomeBNUM2STRAND))
+##
+multifun <- multiget(bnums, ecoligenomeBNUM2MULTIFUN)
+
+## select the entries in the categorie "1.6"
+## ("Macromolecules (cellular constituent)  biosynthesis")
+f <- function(x) {
+  if (all(is.na(x)))
+    return(FALSE)
+  length(grep("^1\\\.6", x) > 0)
+}
+
+is.selected <- unlist(lapply(multifun, f))
+                              
+cPlotCircle(main.inside="E.coli K12")
+beg.end <- matrix(unlist(affypos), nc=2, byrow=TRUE)
+## plot 'bnums'... strand +
+good <- strands == ">" & is.selected
+linesChrom(beg.end[good, 1], beg.end[good, 2],
+             ecoli.len, 1.4, col="red", lwd=3)
+## plot 'bnums'... strand -
+good <- strands == "<" & is.selected
+linesChrom(beg.end[good, 1], beg.end[good, 2],
+           ecoli.len, 1.5, col="blue", lwd=3)
+@ 
 
 \subsection*{More complex plot}
 The next example is more complex: we want to compute and
@@ -165,7 +219,8 @@ with the origin of replication (base zero) in the middle
 of the fragment. We limit the size to lower the computing
 ressources needed to built this document and to demonstrate
 how to perform something not so trivial.
-<<fig=TRUE>>=
+
+\begin{Scode}
 cPlotCircle(main.inside = "E. coli - K12")
 
 data(ecoli.m52.genome)
@@ -183,14 +238,14 @@ theta1 <- chromPos2angle(size.frag/2, ecoli.len)
 
 linesCircle(1.5, col="gray", lty = 2)
 linesArc(theta0, theta1, gccontent + 1)
-@
+\end{Scode}
 
 Zooming can be performed by setting the \Rfunarg{xlim} and
 \Rfunarg{ylim} parameters of the function \Rfunction{cPlotCircle}.
 In our example, there seem to be a CG rich island we would like to
 have a closer look at:
 
-<<fig=TRUE>>=
+\begin{Scode}
 par(mfrow=c(1,2))
 cPlotCircle(main.inside = "E. coli - K12")
 l <- data.frame(x=c(-0.7737990, -0.5286815), y=c(1.521509, 1.304151))
@@ -202,7 +257,7 @@ cPlotCircle(xlim=range(l$x), ylim=range(l$y))
 box(col="red")
 linesCircle(1.5, col="gray", lty = 2)
 linesArc(theta0, theta1, gccontent + 1)
-@
+\end{Scode}
 
 As the parameter \Rfunarg{SLIDE} was set to 200, one can
 estimate from the close up that the size of the island is roughly over 1500

@@ -13,7 +13,7 @@
 \usage{
 data(ecoli.m52.genome)
 data(ecoligenomeCHRLOC)
-data(ecoligenomeSYMBOL2AFFFY)
+data(ecoligenomeSYMBOL2AFFY)
 data(ecoligenomeSYMBOL)
 data(ecoligenomeSTRAND)
 ecoli.len
