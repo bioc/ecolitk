@@ -268,7 +268,7 @@ base pairs.
 In procaryotes, some genes are {\it bundled} in operons. This means that
 a some genes are physically located near each others on the genome,
 and that they are transcribed\footnote{The {\it transcription} is the
-  copy of DNA into RNA}} together. Complex mecanisms can regulate
+  copy of DNA into RNA} together. Complex mecanisms can regulate
 the translation\footnote{The {\it translation} is the making of a
 protein from RNA}. Microarrays are designed to measure the relative abundance
 of transcripts, therefore genes of the same operon should have the
@@ -357,7 +357,7 @@ operons.diff.expr <- operons.ttest.adj < 0.01
 One needs a little bit of bookkeeping to know what belongs to which operon.
 We can build a list of indexes to know what belongs to where:
 <<>>=
-operons.i <- split(seq(along=operons.ttest), operon.name)
+operons.i <- split(seq(along=operons.ttest), ecoligenome.operon$operon.name)
 @ 
 
 The thrill is then to see if the results for differential expression
