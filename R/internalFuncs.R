@@ -14,7 +14,7 @@
     con <- url(my.url, open="r")
   else
     con <- file(my.file, open="r")
-  
+
   ## skip comments
   mycomments <- ""
   line <- readLines(con, n=1)
@@ -40,7 +40,7 @@
     }
     line <- readLines(con, n=1)
   }
-  
+
   attr(env.x2y, "comments") <- mycomments
   return(env.x2y)
 
@@ -49,12 +49,12 @@
 
 .buildMultiFun <- function(my.file=NULL, my.url="http://genprotec.mbl.edu/files/MultiFun.txt") {
   env.multiFun <- new.env(hash=TRUE)
-  
+
   if (is.null(my.file))
     con <- url(my.url, open="r")
   else
     con <- file(my.file, open="r")
-  
+
   ## skip comments
   mycomments <- ""
   line <- readLines(con, n=1)
@@ -118,7 +118,7 @@
 }
 
 .buildBNUM2SYMBOL <- function(my.url="http://genprotec.mbl.edu/files/MultiFun.txt") {
-  
+
 }
 
 .buildMULTIFUN2GO <- function(filename) {
@@ -146,12 +146,12 @@
       ## no go ;)
       GOs <- NA
     } else {
-      GOs <- strsplit(GOs, " > ")[[1]]      
+      GOs <- strsplit(GOs, " > ")[[1]]
       GOs <- strsplit(GOs, " ; ")
       GOs <- unlist(lapply(GOs, function(x) x[2]))
     }
     assign(multiFun, GOs, envir=env.multiFun2GO)
-    
+
     line <- readLines(con, n=1)
   }
   attr(env.multiFun2GO, "comments") <- mycomments
@@ -164,9 +164,9 @@
 
   nid.i <- 1
   nname.i <- 2
-  
+
   linesInFile <- readLines(filename)
-  
+
   tmp <- strsplit(linesInFile, ";")
 
   r <- lapply(tmp, function(x, y) strsplit(x[nid.i], y), "\\\.")
@@ -178,11 +178,11 @@
   nodeid2nodename <- new.env(hash=TRUE)
 
   multiassign(mFunNodenames, seq(along=mFunNodenames), nodename2i)
-  mFunEdges <- vector("list", length=length(mFunNodenames)) 
+  mFunEdges <- vector("list", length=length(mFunNodenames))
   names(mFunEdges) <- mFunNodenames
   multiassign(unlist(lapply(tmp, function(x) x[nid.i])), unlist(lapply(tmp, function(x) x[nname.i])),
-              envir=nodeid2nodename) 
-  
+              envir=nodeid2nodename)
+
   for (i in seq(along=r)) {
     n <- length(r[[i]][[1]])
     if (n == 1)
@@ -201,7 +201,7 @@
       mFunEdges[[parent.i]]$edges = c(mFunEdges[[parent.i]]$edges, child.i)
       mFunEdges[[parent.i]]$weights = c(mFunEdges[[parent.i]]$weights, 1)
     }
-    
+
     if (is.null(mFunEdges[[child.i]])) {
       ##meshedges[[child.i]]$edges = parent.i
 ###meshedges[[parent.i]]$edges = paste(r[[i]][[1]], collapse=".")
@@ -212,22 +212,22 @@
       ##meshedges[[child.i]]$weights = c(meshedges[[child.i]]$weights, 1)
     }
   }
-  
+
   ##meshnodenames <- seq(along=meshnodenames)
   ##names(meshedges) <- meshnodenames
-  
+
   gmesh <- new("graphNEL", nodes=mFunNodenames, edgeL=mFunEdges, edgemode="directed")
 
   return(gmesh)
 }
 
 linkedmultiget <- function(x, envir.list=list(), unique=TRUE) {
-  
+
   if (! is.character(x))
     stop("x must be a vector of mode 'character'")
 
   f <- function(x, y) {
-    tmp <- multiget(x, envir=y)
+    tmp <- mget(x, envir=y, ifnotfound=NA)
     tmp <- unlist(tmp)
     if (all(is.na(tmp)))
       tmp <- as.character(tmp)
@@ -235,7 +235,7 @@ linkedmultiget <- function(x, envir.list=list(), unique=TRUE) {
       stop("Values in environments must be of mode 'character'")
     return(tmp)
   }
-  
+
   ##r <- vector("list", length=length(x))
   r <- as.list(x)
   for (i in seq(along=envir.list)) {
