@@ -4,14 +4,17 @@
 .buildBNUM2GENEPRODUCT <- function() {
   return(.buildGENEPRODFUN(what="gene product"))
 }
-.buildGENEPRODFUN <- function(my.url="http://genprotec.mbl.edu/files/geneproductfunctions.txt", what="") {
+.buildGENEPRODFUN <- function(my.file=NULL, my.url="http://genprotec.mbl.edu/files/geneproductfunctions.txt", what="") {
   choices <- c("bnum", "genbank", "gene", "gene type", "gene product")
   what <- match.arg(what, choices)
   what.i <- match(what, choices)
   env.x2y <- new.env(hash=TRUE)
   ##env.genbank <- new.env(hash=TRUE)
-  con <- url(my.url, open="r")
-
+  if (is.null(file))
+    con <- url(my.url, open="r")
+  else
+    con <- file(my.file, open="r")
+  
   ## skip comments
   mycomments <- ""
   line <- readLines(con, n=1)
@@ -44,9 +47,13 @@
 }
 
 
-.buildMultiFun <- function(my.url="http://genprotec.mbl.edu/files/MultiFun.txt") {
+.buildMultiFun <- function(my.file=NULL, my.url="http://genprotec.mbl.edu/files/MultiFun.txt") {
   env.multiFun <- new.env(hash=TRUE)
-  con <- url(my.url, open="r")
+  
+  if (is.null(my.file))
+    con <- url(my.url, open="r")
+  else
+    con <- file(my.file, open="r")
   
   ## skip comments
   mycomments <- ""
@@ -73,10 +80,14 @@
   return(env.multiFun)
 }
 
-.buildBNUM2MULTIFUN <- function(my.url="http://genprotec.mbl.edu/files/multifunassignments.txt") {
+.buildBNUM2MULTIFUN <- function(my.file=NULL, my.url="http://genprotec.mbl.edu/files/multifunassignments.txt") {
   env.bnum2multifun <- new.env(hash=TRUE)
-  con <- url(my.url, open="r")
-  
+
+  if (is.null(my.file))
+    con <- url(my.url, open="r")
+  else
+    con <- file(my.file, open="r")
+
   ## skip comments
   mycomments <- ""
   line <- readLines(con, n=1)
@@ -210,15 +221,19 @@
   return(gmesh)
 }
 
-chainedmultiget <- function(x, envir.list=list(), unique=TRUE) {
+linkedmultiget <- function(x, envir.list=list(), unique=TRUE) {
+  
   if (! is.character(x))
     stop("x must be a vector of mode 'character'")
 
   f <- function(x, y) {
     tmp <- multiget(x, envir=y)
-    if (! all(unlist(lapply(tmp, is.character)), na.rm=TRUE))
+    tmp <- unlist(tmp)
+    if (all(is.na(tmp)))
+      tmp <- as.character(tmp)
+    if (! is.character(tmp))
       stop("Values in environments must be of mode 'character'")
-    return(unlist(tmp))    
+    return(tmp)
   }
   
   ##r <- vector("list", length=length(x))
