@@ -99,3 +99,66 @@
   attr(env.multiFun2GO, "comments") <- mycomments
   return(env.multiFun2GO)
 }
+
+
+.buildMultiFunGraphNEL <- function(filename) {
+  library(graph)
+
+  nid.i <- 1
+  nname.i <- 2
+  
+  linesInFile <- readLines(filename)
+  
+  tmp <- strsplit(linesInFile, ";")
+
+  r <- lapply(tmp, function(x, y) strsplit(x[nid.i], y), "\\\.")
+  r.names <- unlist(lapply(tmp, function(x, y) x[nname.i]))
+
+  mFunNodenames <- unique(unlist(lapply(tmp, function(x) x[nname.i])))
+  nodename2i <- new.env(hash=TRUE)
+  nodename2nodeid <- new.env(hash=TRUE)
+  nodeid2nodename <- new.env(hash=TRUE)
+
+  multiassign(mFunNodenames, seq(along=mFunNodenames), nodename2i)
+  mFunEdges <- vector("list", length=length(mFunNodenames)) 
+  names(mFunEdges) <- mFunNodenames
+  multiassign(unlist(lapply(tmp, function(x) x[nid.i])), unlist(lapply(tmp, function(x) x[nname.i])),
+              envir=nodeid2nodename) 
+  
+  for (i in seq(along=r)) {
+    n <- length(r[[i]][[1]])
+    if (n == 1)
+      next
+    parent <- paste(r[[i]][[1]][seq(1, n-1, length=n-1)], collapse=".")
+    if (! exists(parent, nodeid2nodename))
+      next
+    parent.i <- get(get(parent, nodeid2nodename), nodename2i)
+    child.i <- get(tmp[[i]][nname.i], nodename2i)
+    ##parent.i <- get(get(parent, nodeid2nodename), nodename2i)
+    ##child.i <- i
+    if (is.null(mFunEdges[[parent.i]])) {
+      mFunEdges[[parent.i]]$edges = child.i
+      mFunEdges[[parent.i]]$weights = 1
+    } else {
+      mFunEdges[[parent.i]]$edges = c(mFunEdges[[parent.i]]$edges, child.i)
+      mFunEdges[[parent.i]]$weights = c(mFunEdges[[parent.i]]$weights, 1)
+    }
+    
+    if (is.null(mFunEdges[[child.i]])) {
+      ##meshedges[[child.i]]$edges = parent.i
+###meshedges[[parent.i]]$edges = paste(r[[i]][[1]], collapse=".")
+                                        #meshedges[[child.i]]$weights = 1
+    } else {
+###meshedges[[parent.i]]$edges = c(meshedges[[parent.i]]$edges, paste(r[[i]][[1]], collapse="."))
+      ##meshedges[[child.i]]$edges = c(meshedges[[child.i]]$edges, parent.i)
+      ##meshedges[[child.i]]$weights = c(meshedges[[child.i]]$weights, 1)
+    }
+  }
+  
+  ##meshnodenames <- seq(along=meshnodenames)
+  ##names(meshedges) <- meshnodenames
+  
+  gmesh <- new("graphNEL", nodes=mFunNodenames, edgeL=mFunEdges, edgemode="directed")
+
+  return(gmesh)
+}
