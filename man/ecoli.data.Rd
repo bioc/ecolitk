@@ -4,6 +4,7 @@
 \alias{ecoligenomeSYMBOL2AFFY}
 \alias{ecoligenomeSYMBOL}
 \alias{ecoligenomeSTRAND}
+\alias{ecoli.operon}
 \alias{ecoli.len}
 %\docType{data}
 \title{ Escherichia coli data}
@@ -16,6 +17,7 @@ data(ecoligenomeCHRLOC)
 data(ecoligenomeSYMBOL2AFFY)
 data(ecoligenomeSYMBOL)
 data(ecoligenomeSTRAND)
+data(ecoli.operon)
 ecoli.len
 }
 \format{

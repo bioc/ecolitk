@@ -1,3 +1,49 @@
+.buildBNUM2GENBANK <- function() {
+  return(.buildGENEPRODFUN(what="genbank"))
+}
+.buildBNUM2GENEPRODUCT <- function() {
+  return(.buildGENEPRODFUN(what="gene product"))
+}
+.buildGENEPRODFUN <- function(my.url="http://genprotec.mbl.edu/files/geneproductfunctions.txt", what="") {
+  choices <- c("bnum", "genbank", "gene", "gene type", "gene product")
+  what <- match.arg(what, choices)
+  what.i <- match(what, choices)
+  env.x2y <- new.env(hash=TRUE)
+  ##env.genbank <- new.env(hash=TRUE)
+  con <- url(my.url, open="r")
+
+  ## skip comments
+  mycomments <- ""
+  line <- readLines(con, n=1)
+  while (length(grep("^bnum", line)) == 0) {
+    line <- readLines(con, n=1)
+    mycomments <- paste(mycomments, line, sep="\n")
+  }
+  mycomments <- paste(mycomments, "\n", sep="")
+  line <- readLines(con, n=1)
+
+  ##
+  while (length(line) != 0) {
+    if (line != "") {
+      m <- strsplit(line, "\t", extended=TRUE)[[1]]
+      bnum <- m[1]
+      genbank <- m[what.i]
+      if (genbank == "0")
+        genbank <- NA
+      if (exists(bnum, envir=env.x2y))
+        assign(bnum, unique(c(genbank, get(bnum, envir=env.x2y))), envir=env.x2y)
+      else
+        assign(bnum, genbank, envir=env.x2y)
+    }
+    line <- readLines(con, n=1)
+  }
+  
+  attr(env.x2y, "comments") <- mycomments
+  return(env.x2y)
+
+}
+
+
 .buildMultiFun <- function(my.url="http://genprotec.mbl.edu/files/MultiFun.txt") {
   env.multiFun <- new.env(hash=TRUE)
   con <- url(my.url, open="r")
@@ -23,6 +69,7 @@
     }
     line <- readLines(con, n=1)
   }
+  attr(env.multiFun, "comments") <- mycomments
   return(env.multiFun)
 }
 
@@ -161,4 +208,26 @@
   gmesh <- new("graphNEL", nodes=mFunNodenames, edgeL=mFunEdges, edgemode="directed")
 
   return(gmesh)
+}
+
+chainedmultiget <- function(x, envir.list=list(), unique=TRUE) {
+  if (! is.character(x))
+    stop("x must be a vector of mode 'character'")
+
+  f <- function(x, y) {
+    tmp <- multiget(x, envir=y)
+    if (! all(unlist(lapply(tmp, is.character)), na.rm=TRUE))
+      stop("Values in environments must be of mode 'character'")
+    return(unlist(tmp))    
+  }
+  
+  ##r <- vector("list", length=length(x))
+  r <- as.list(x)
+  for (i in seq(along=envir.list)) {
+    r <- lapply(r, f, envir.list[[i]])
+    if (unique)
+      r <- lapply(r, unique)
+  }
+  names(r) <- x
+  return(r)
 }
