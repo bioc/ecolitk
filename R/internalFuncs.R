@@ -1,18 +1,16 @@
 .buildBNUM2GENBANK <- function() {
   return(.buildGENEPRODFUN(what="genbank"))
 }
-
 .buildBNUM2GENEPRODUCT <- function() {
   return(.buildGENEPRODFUN(what="gene product"))
 }
-
 .buildGENEPRODFUN <- function(my.file=NULL, my.url="http://genprotec.mbl.edu/files/geneproductfunctions.txt", what="") {
   choices <- c("bnum", "genbank", "gene", "gene type", "gene product")
   what <- match.arg(what, choices)
   what.i <- match(what, choices)
   env.x2y <- new.env(hash=TRUE)
   ##env.genbank <- new.env(hash=TRUE)
-  if (is.null(my.file))
+  if (is.null(file))
     con <- url(my.url, open="r")
   else
     con <- file(my.file, open="r")
@@ -222,7 +220,6 @@
 
   return(gmesh)
 }
-
 
 linkedmultiget <- function(x, envir.list=list(), unique=TRUE) {
 

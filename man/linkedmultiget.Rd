@@ -27,7 +27,7 @@ linkedmultiget(x, envir.list = list(), unique = TRUE)
   A list of length the length of \code{x}.
 }
 \author{ Laurent Gautier }
-\seealso{ \code{\link{mget}} }
+\seealso{ \code{\link[Biobase]{multiget}} }
 \examples{
 data(ecoligenomeBNUM)
 data(ecoligenomeBNUM2MULTIFUN)

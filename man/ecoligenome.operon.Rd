@@ -39,8 +39,8 @@ data(ecoligenomeSYMBOL2AFFY)
 ## get the Affymetrix identifiers for the probe sets bundled in operons
 ## (see the vignette for more details)
 ecoligenome.operon$affyid <-
-unname(unlist(mget(ecoligenome.operon$gene.name,
-                   ecoligenomeSYMBOL2AFFY, ifnotfound=NA)))
+unname(unlist(multiget(ecoligenome.operon$gene.name,
+                       ecoligenomeSYMBOL2AFFY)))
 
 }
 \keyword{datasets}

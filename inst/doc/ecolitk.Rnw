@@ -182,12 +182,12 @@ data(ecoligenomeBNUM2MULTIFUN)
 data(ecoligenomeCHRLOC)
 
 affyids <- ls(ecoligenomeCHRLOC)
-affypos <- mget(affyids, ecoligenomeCHRLOC, ifnotfound=NA)
+affypos <- multiget(affyids, ecoligenomeCHRLOC)
 ## 'unlist' as the mapping is one-to-one
-bnums <- unlist(mget(affyids, ecoligenomeBNUM, ifnotfound=NA)) 
-strands <- unlist(mget(bnums, ecoligenomeBNUM2STRAND, ifnotfound=NA))
+bnums <- unlist(multiget(affyids, ecoligenomeBNUM)) 
+strands <- unlist(multiget(bnums, ecoligenomeBNUM2STRAND))
 ##
-multifun <- mget(bnums, ecoligenomeBNUM2MULTIFUN, ifnotfound=NA)
+multifun <- multiget(bnums, ecoligenomeBNUM2MULTIFUN)
 
 ## select the entries in the categorie "1.6"
 ## ("Macromolecules (cellular constituent)  biosynthesis")
@@ -282,8 +282,8 @@ library(Biobase)
 data(ecoligenome.operon)
 data(ecoligenomeSYMBOL2AFFY)
 
-tmp <- mget(ecoligenome.operon$gene.name,
-         ecoligenomeSYMBOL2AFFY, ifnotfound=NA)
+tmp <- multiget(ecoligenome.operon$gene.name,
+                ecoligenomeSYMBOL2AFFY)
 
 ecoligenome.operon$affyid <- unname(unlist(tmp))
 @ 
