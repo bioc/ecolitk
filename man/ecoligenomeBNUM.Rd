@@ -5,10 +5,11 @@
 \alias{ecoligenomeBNUM2GENETYPE}
 \alias{ecoligenomeBNUM2GENBANK}
 \alias{ecoligenomeBNUM2GENEPRODUCT}
+\alias{ecoligenomeSYMBOL2BNUM}
 \docType{data}
 \title{ Environment for 'bnum' identifiers}
 \description{
-  An environment to associate Affymetrix probe set IDs with 'bnum' IDs
+  Environments to associate Affymetrix probe set IDs with 'bnum' IDs
 }
 \usage{
 data(ecoligenomeBNUM)
@@ -17,6 +18,7 @@ data(ecoligenomeBNUM2ENZYME)
 data(ecoligenomeBNUM2GENETYPE)
 data(ecoligenomeBNUM2GENBANK)
 data(ecoligenomeBNUM2GENEPRODUCT)
+data(ecoligenomeSYMBOL2BNUM)
 }
 \format{
   These are \code{environment} objects.

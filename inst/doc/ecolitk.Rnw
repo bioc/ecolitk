@@ -263,7 +263,114 @@ As the parameter \Rfunarg{SLIDE} was set to 200, one can
 estimate from the close up that the size of the island is roughly over 1500
 base pairs.
 
+\section*{Genes in operons}
 
+In procaryotes, some genes are {\it bundled} in operons. This means that
+a some genes are physically located near each others on the genome,
+and that they are transcribed\footnote{The {\it transcription} is the
+  copy of DNA into RNA}} together. Complex mecanisms can regulate
+the translation\footnote{The {\it translation} is the making of a
+protein from RNA}. Microarrays are designed to measure the relative abundance
+of transcripts, therefore genes of the same operon should have the
+same expression level.
+
+
+First one has to find the Affymetrix identifiers for the genes known
+to be in operons:
+<<>>= 
+library(Biobase)
+data(ecoligenome.operon)
+data(ecoligenomeSYMBOL2AFFY)
+
+tmp <- multiget(ecoligenome.operon$gene.name,
+                ecoligenomeSYMBOL2AFFY)
+
+ecoligenome.operon$affyid <- unname(unlist(tmp))
+@ 
+For convenience, the Affymetrix probe set identifiers are stored in
+the \Rclass{data.frame}. As an exercise, the reader can write the few
+lines of code needed to plot the operon on the genome (see above for
+plotting examples).
+
+Once this done, grouping the Affymetrix identifiers according to the
+operon they belong to is done simply:
+<<>>=
+attach(ecoligenome.operon)
+affyoperons <- split(affyid, operon.name)
+detach(ecoligenome.operon)
+
+## a sample of 5 operons
+affyoperons[18:22]
+@ 
+
+Since we are going to use Affymetrix data, loading the affy package is needed:
+<<>>=
+library(affy)
+@ 
+
+The E. coli data used in the following are freely available at
+\url{http://www.affymetrix.com/support/technical/sample_data/demo_data.affx}
+For convenience, as subset of these data are included in the package:
+<<>>=
+library(ecoliLeucine)
+
+data(ecoliLeucine)
+@ 
+
+First, one should normalize the data:
+<<>>=
+abatch.nqt <- normalize(ecoliLeucine, method="quantiles")
+@ 
+
+The summary statistic for the probe sets can be done simply
+<<>>=
+eset <- computeExprSet(abatch.nqt, pmcorrect.method="pmonly", summary.method="medianpolish", ids=affyoperons[[18]])
+@ 
+
+
+%% First, we want to apply the vsn transformation to our data:
+%% <<>>=
+%% library(vsn)
+%% abatch.n <- normalize(ecoliLeucine, method="vsn")
+%% @ 
+%% Obtaining the intensities for the probe sets in a particular operon can be done simply
+%% (here for the $18^{\mathtt{th}}$ operon in our list).
+%% <<>>=
+%% ## name of the operon
+%% names(affyoperons)[18]
+%% ## get the probe sets
+%% ppsetoperons <- probeset(abatch.n, affyoperons[[18]])
+%% @ 
+
+%% To compute on the probe intensities
+%% within an operon, the method \Rfunction{ppsetApply} is helpful.
+%% The following example shows how to compute the variance for the probes
+%% within an operon:
+%% <<>>=
+%% ppset.fun <- function(ppset, fun, pmcorrect.fun = pmcorrect.pmonly, transfo.fun=log, ...) {
+%%   probes <- do.call("pmcorrect.fun", list(ppset))
+%%   probes <- transfo.fun(probes)
+%%   r <- apply(probes, 1, fun, ...)
+%%   return(r)
+%% }
+
+%% r <- ppsetApply(ecoliLeucine, ppset.fun, affyoperons[[18]], fun=var, na.rm=TRUE)
+%% @ 
+%% Note that we log-transform the probe intensities to work on the the generalized-log transform
+%% (as 'vsn' returns the exponential of the g-log transform)
+%% <<fig=TRUE>>=
+%% boxplot(r)
+%% @ 
+
+
+%% <<>>=
+%% var.boot <- function(x, na.rm=TRUE) {
+%%   f <- function(d, i) { var(d[i], na.rm=na.rm) }
+%%   boot(x, f, R=999, stype="i")
+%% }
+
+%% r.boot <- ppsetApply(ecoliLeucine, ppset.fun, affyoperons[[18]], fun=var.boot, na.rm=TRUE)
+%% @ 
 
 \end{document}
 

@@ -7,7 +7,7 @@
 }
 \usage{data(ecoligenome.operon)}
 \format{
-  A data frame with 932 observations (genes ) on the following 4 variables.
+  A data frame with 932 observations (genes) on the following 4 variables.
   \describe{
     \item{gene.name}{a character vector}
     \item{gene.annotation}{a character vector}
@@ -31,10 +31,16 @@
 %   ~~ possibly secondary sources and usages ~~
 % }
 \examples{
-## something that might be useful when working with Affymetrix data
 library(Biobase)
 data(ecoligenome.operon)
 data(ecoligenomeSYMBOL2AFFY)
-ecoligenome.operon$affyid <- unname(unlist(multiget(ecoligenome.operon$gene.name, ecoligenomeSYMBOL2AFFY)))
+
+## something that might be useful when working with Affymetrix data:
+## get the Affymetrix identifiers for the probe sets bundled in operons
+## (see the vignette for more details)
+ecoligenome.operon$affyid <-
+unname(unlist(multiget(ecoligenome.operon$gene.name,
+                       ecoligenomeSYMBOL2AFFY)))
+
 }
 \keyword{datasets}
