@@ -1,0 +1,207 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{ecolitk}
+%\VignetteKeywords{}
+%\VignetteDepends{ecolitk}
+%\VignettePackage{ecolitk}
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+
+\bibliographystyle{plainnat}
+
+\author{Laurent}
+\begin{document}
+\title{A package to work with procaryots}
+\maketitle
+
+\section*{Introduction}
+
+This package is a mixture of data (close the the data in the meta-data
+packages) and of code. The code was not included in other packages
+because:
+\begin{itemize}
+  \item much is still to be done, much is likely to change.
+  \item some features do are appear completely compatible with what is
+  existing elsewhere
+\end{itemize}
+Things will settle in time\ldots
+
+The package focuses on {\it Escherichia coli} but can be used with
+other bacterial genomes or plamids.
+
+To load the package, do:
+\begin{Sinput}
+R> library(ecolitk)
+\end{Sinput}
+<<echo=F,results=hide>>=
+library(ecolitk)
+@
+
+\section*{{\it E. coli} data}
+Data related to {\it E. coli} are included in the package. Effort was
+made to follow the convention used in the meta-data packages available
+on bioconductor. On should refer to the help files for further details.
+
+In the following example, we explain how to find the positions of the genes
+of the operon lactose on the genome.
+A first step is to load needed data structures:
+<<>>=
+data(ecoligenomeSYMBOL2AFFY)
+data(ecoligenomeCHRLOC)
+@
+This done, we want to find the genes with names like \verb+lac*+.
+The \Rpackage{base} function \Rfunction{grep} provides a convenient
+way to do it. Because the data structures are centered on Affymetrix
+probeset identifiers, an extra step is need to convert the gene name
+into the corresponding identifier. The locations of the genes can
+then be extracted from the environment \Robject{ecoligenomeCHRLOC}.
+We store them in the \Robject{beg.end}.
+<<>>=
+lac.i <- grep("^lac", ls(ecoligenomeSYMBOL2AFFY))
+lac.symbol <- ls(ecoligenomeSYMBOL2AFFY)[lac.i]
+lac.affy <- unlist(lapply(lac.symbol, get, envir=ecoligenomeSYMBOL2AFFY))
+
+beg.end <- lapply(lac.affy, get, envir=ecoligenomeCHRLOC)
+beg.end <- matrix(unlist(beg.end), nc=2, byrow=TRUE)
+@ 
+
+\section*{Primitives for circular entities}
+
+<<fig=TRUE>>=
+par(mfrow=c(2,2))
+n <- 10
+thetas <- rev(seq(0, 2 * pi, length=n))
+
+rhos <- rev(seq(1, n) / n)
+
+xy <- polar2xy(rhos, thetas)
+colo <- heat.colors(n)
+
+plot(0, 0, xlim=c(-2, 2), ylim=c(-2, 2), type="n")
+for (i in 1:n)
+  linesCircle(rhos[i]/2, xy$x[i], xy$y[i])
+
+plot(0, 0, xlim=c(-2, 2), ylim=c(-2, 2), type="n")
+for (i in 1:n)
+  polygonDisk(rhos[i]/2, xy$x[i], xy$y[i], col=colo[i])
+
+plot(0, 0, xlim=c(-2, 2), ylim=c(-2, 2), type="n", xlab="", ylab="")
+for (i in 1:n)
+  polygonArc(0, thetas[i],
+             rhos[i]/2, rhos[i],
+             center.x = xy$x[i], center.y = xy$y[i], col=colo[i])
+
+plot(0, 0, xlim=c(-2, 2), ylim=c(-2, 2), type="n", xlab="", ylab="")
+for (i in (1:n)[-1]) {
+  linesCircle(rhos[i-1], col="gray", lty=2)
+  polygonArc(thetas[i-1], thetas[i],
+             rhos[i-1], rhos[i], col=colo[i],
+             edges=20)
+  arrowsArc(thetas[i-1], thetas[i],
+             rhos[i] + 1, col=colo[i],
+             edges=20)
+}
+  
+@
+
+\section*{Plotting toolbox for circular genomes}
+
+The function \Rfunction{cPlotCircle} draws a circular chromosome.
+<<fig=TRUE>>=
+cPlotCircle(main.inside = "E. coli - K12")
+@
+
+The drawing of the chromosome is thought as a first step when plotting
+informations on a circular genome. The following example shows how
+to plot the locations of the genes for the operon lactose on the genome.
+(the steps leading to their respective positions were detailed above).
+
+We sort the genes according to their positions on the genome,
+and generate color for each gene:
+<<>>=
+lac.o <- order(beg.end[, 1])
+
+lac.i <- lac.i[lac.o]
+lac.symbol <- lac.symbol[lac.o]
+lac.affy <- lac.affy[lac.o]
+beg.end <- beg.end[lac.o, ]
+@
+
+<<fig=TRUE>>=
+cPlotCircle(main.inside = "E. coli - K12", main="lac genes")
+polygonChrom(beg.end[, 1], beg.end[, 2], ecoli.len, 1, 1.4)
+@
+ 
+The next example is more complex: we want to compute and
+display the GC content over a fragment of the genome.
+The fragment is decided to be of size $1$ million bases,
+with the origin of replication (base zero) in the middle
+of the fragment. We limit the size to lower the computing
+ressources needed to built this document and to demonstrate
+how to perform something not so trivial.
+<<fig=TRUE>>=
+cPlotCircle(main.inside = "E. coli - K12")
+
+data(ecoli.m52.genome)
+size.frag <- 1000000
+
+fragment.r <- substring(ecoli.m52.genome, 1, size.frag/2)
+fragment.l <- substring(ecoli.m52.genome, ecoli.len - size.frag / 2, ecoli.len)
+fragment <- paste(fragment.l, fragment.r, sep="")
+library(matchprobes)
+tmp <- wstringapply(fragment, 400, 200, basecontent)
+gccontent <- unlist(lapply(tmp, function(x) sum(x[3:4]) / sum(x)))
+
+theta0 <- chromPos2angle(0 - size.frag/2, ecoli.len)
+theta1 <- chromPos2angle(size.frag/2, ecoli.len)
+
+linesCircle(1.5, col="gray", lty = 2)
+linesArc(theta0, theta1, gccontent + 1)
+@
+
+Zooming can be performed by setting the \Rfunarg{xlim} and
+\Rfunarg{ylim} parameters of the function \Rfunction{cPlotCircle}.
+In our example, there seem to be a CG rich island we would like to
+have a closer look at:
+
+<<fig=TRUE>>=
+par(mfrow=c(1,2))
+cPlotCircle(main.inside = "E. coli - K12")
+l <- data.frame(x=c(-0.7737990, -0.5286815), y=c(1.521509, 1.304151))
+linesCircle(1.5, col="gray", lty = 2)
+linesArc(theta0, theta1, gccontent + 1)
+rect(l$x[1], l$y[1], l$x[2], l$y[2], border="red")
+
+cPlotCircle(xlim=range(l$x), ylim=range(l$y))
+box(col="red")
+linesCircle(1.5, col="gray", lty = 2)
+linesArc(theta0, theta1, gccontent + 1)
+@
+
+As the parameter \Rfunarg{SLIDE} was set to 200, one can roughly
+estimate from the close up that the size of the island to be over 1500
+base pairs.
+
+
+\end{document}
+
