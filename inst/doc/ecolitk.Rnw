@@ -126,6 +126,8 @@ for (i in (1:n)[-1]) {
 
 \section*{Plotting toolbox for circular genomes}
 
+\subsection*{Plot a (circular) genome}
+
 The function \Rfunction{cPlotCircle} draws a circular chromosome.
 <<fig=TRUE>>=
 cPlotCircle(main.inside = "E. coli - K12")
@@ -136,8 +138,9 @@ informations on a circular genome. The following example shows how
 to plot the locations of the genes for the operon lactose on the genome.
 (the steps leading to their respective positions were detailed above).
 
-We sort the genes according to their positions on the genome,
-and generate color for each gene:
+\subsection*{plot genes on a genome}
+We sort the genes the \verb+lac*+ genes discussed in an example above 
+according to their positions on the genome.
 <<>>=
 lac.o <- order(beg.end[, 1])
 
@@ -147,11 +150,14 @@ lac.affy <- lac.affy[lac.o]
 beg.end <- beg.end[lac.o, ]
 @
 
+This done, we plot them as polygons (same shape as preserved pineapple
+in cans).
 <<fig=TRUE>>=
 cPlotCircle(main.inside = "E. coli - K12", main="lac genes")
 polygonChrom(beg.end[, 1], beg.end[, 2], ecoli.len, 1, 1.4)
 @
- 
+
+\subsection*{More complex plot}
 The next example is more complex: we want to compute and
 display the GC content over a fragment of the genome.
 The fragment is decided to be of size $1$ million bases,
@@ -198,9 +204,10 @@ linesCircle(1.5, col="gray", lty = 2)
 linesArc(theta0, theta1, gccontent + 1)
 @
 
-As the parameter \Rfunarg{SLIDE} was set to 200, one can roughly
-estimate from the close up that the size of the island to be over 1500
+As the parameter \Rfunarg{SLIDE} was set to 200, one can
+estimate from the close up that the size of the island is roughly over 1500
 base pairs.
+
 
 
 \end{document}
