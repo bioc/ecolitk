@@ -4,6 +4,7 @@ Date: 2004-6
 Title: Meta-data and tools for E. coli
 Author: Laurent Gautier
 Maintainer: Laurent <laurent@cbs.dtu.dk>
+biocViews: Annotation, Visualization
 Depends: R (>= 1.9.0), affy, ecoliLeucine
 Description: Meta-data and tools to work with E. coli. The tools are
         mostly plotting functions to work with circular genomes. They
