@@ -1,7 +1,7 @@
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %\VignetteIndexEntry{ecolitk}
 %\VignetteKeywords{}
-%\VignetteDepends{ecolitk}
+%\VignetteDepends{ecolitk, Biobase, matchprobes, affy, ecoliLeucine, multtest, vsn}
 %\VignettePackage{ecolitk}
 \documentclass[12pt]{article}
 
