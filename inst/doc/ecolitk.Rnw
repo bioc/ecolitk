@@ -324,7 +324,7 @@ The summary statistics for a probe set can be obtained simply:
 <<>>=
 ## the operon taken as an example:
 names(affyoperons)[18]
-
+colnames(abatch.nqt@exprs) <- NULL
 eset <- computeExprSet(abatch.nqt, pmcorrect.method="pmonly", summary.method="medianpolish", ids = affyoperons[[18]]) 
 
 <<>>=
