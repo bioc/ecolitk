@@ -162,7 +162,7 @@
 
 
 .buildMultiFunGraphNEL <- function(filename) {
-  library(graph)
+  require("graph") || stop("The graph packages is needed for this operation")
 
   nid.i <- 1
   nname.i <- 2
