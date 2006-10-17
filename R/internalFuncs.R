@@ -139,10 +139,10 @@
 
   while (length(line) != 0) {
     ## get MultiFun number
-    m <- regexpr("^MultiFun:(\.+?) ", line, perl=TRUE)
+    m <- regexpr("^MultiFun:(\\.+?) ", line, perl=TRUE)
     multiFun <- substr(line, 10, attr(m, "match.length") - 1)
     ## get the GOs
-    m <- regexpr("> \.+$", line, perl=TRUE)
+    m <- regexpr("> \\.+$", line, perl=TRUE)
     GOs <- substr(line, m+2, m+attr(m, "match.length"))
     if (GOs == "GO:.") {
       ## no go ;)
