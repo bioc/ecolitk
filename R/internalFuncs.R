@@ -70,9 +70,9 @@
   while (length(line) != 0) {
     if (line != "") {
       ## trim leading white spaces
-      m <- regexpr("(\\\w\\\.?)+", line, perl=TRUE)
+      m <- regexpr("(\\w\\.?)+", line, perl=TRUE)
       multiFun <- substr(line, m, m+attr(m, "match.length")-1)
-      multiFun <- sub("\\\.$", "", multiFun)
+      multiFun <- sub("\\.$", "", multiFun)
       multiFunAnnotation <- substr(line, m + attr(m, "match.length") + 1, nchar(line))
       assign(multiFun, multiFunAnnotation, envir=env.multiFun)
     }
@@ -104,9 +104,9 @@
   while (length(line) != 0) {
     if (line != "") {
       ## trim leading white spaces
-      m <- regexpr("b\\\d+", line, perl=TRUE)
+      m <- regexpr("b\\d+", line, perl=TRUE)
       bnum <- substr(line, m, m+attr(m, "match.length")-1)
-      m <- regexpr("\\\s\\\S+", line, perl=TRUE)
+      m <- regexpr("\\s\\S+", line, perl=TRUE)
       multiFun <- substr(line, m+1, m+attr(m, "match.length")-1)
       if (exists(bnum, envir=env.bnum2multifun))
         assign(bnum, unique(c(multiFun, get(bnum, envir=env.bnum2multifun))), envir=env.bnum2multifun)
@@ -171,7 +171,7 @@
 
   tmp <- strsplit(linesInFile, ";")
 
-  r <- lapply(tmp, function(x, y) strsplit(x[nid.i], y), "\\\.")
+  r <- lapply(tmp, function(x, y) strsplit(x[nid.i], y), "\\.")
   r.names <- unlist(lapply(tmp, function(x, y) x[nname.i]))
 
   mFunNodenames <- unique(unlist(lapply(tmp, function(x) x[nname.i])))
