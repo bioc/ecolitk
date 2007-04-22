@@ -17,7 +17,7 @@ data(ecoligenomeCHRLOC)
 data(ecoligenomeSYMBOL2AFFY)
 data(ecoligenomeSYMBOL)
 data(ecoligenomeSTRAND)
-data(ecoli.operon)
+data(ecoligenome.operon)
 ecoli.len
 }
 \format{
