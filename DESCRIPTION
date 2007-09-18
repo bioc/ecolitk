@@ -1,6 +1,6 @@
 Package: ecolitk
-Version: 1.9.0
-Date: 2007-04
+Version: 1.9.1
+Date: 2007-10
 Title: Meta-data and tools for E. coli
 Author: Laurent Gautier
 Maintainer: Laurent <lgautier@gmail.com>
