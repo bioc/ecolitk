@@ -2,7 +2,7 @@
 \alias{wstringapply}
 \title{ Apply a function on a window sliding on a string }
 \description{
-  Apply a function on a window sliding on a string }
+  Apply a function on a window sliding on a string.
 }
 \usage{
 wstringapply(x, SIZE, SLIDE, FUN, ...)
@@ -20,7 +20,7 @@ wstringapply(x, SIZE, SLIDE, FUN, ...)
 \value{
   A list of size \code{nchar(x) - SIZE}.
 }
-\author{ ~~who you are~~ }
+\author{ L, Gautier }
 \examples{
 }
 \keyword{ manip }
