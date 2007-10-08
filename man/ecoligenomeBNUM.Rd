@@ -16,7 +16,7 @@ data(ecoligenomeBNUM)
 data(ecoligenomeBNUM2SYMBOL)
 data(ecoligenomeBNUM2ENZYME)
 data(ecoligenomeBNUM2GENETYPE)
-data(ecoligenomeBNUM2GENBANK)
+%data(ecoligenomeBNUM2GENBANK)
 data(ecoligenomeBNUM2GENEPRODUCT)
 data(ecoligenomeSYMBOL2BNUM)
 }
