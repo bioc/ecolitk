@@ -2,7 +2,7 @@
 \alias{linkedmultiget}
 \title{ A function to look for values across linked environments}
 \description{
-  A function to look for values across linked environments}
+  A function to look for values across linked environments.
 }
 \usage{
 linkedmultiget(x, envir.list = list(), unique = TRUE)
