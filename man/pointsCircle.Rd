@@ -32,7 +32,7 @@ polygonArc(theta0, theta1, radius.in, radius.out,
   \item{center.x, center.y}{Coordinates for the center of the circle
     (default to (0, 0))}
   \item{edges}{ number of edges the shape is made of }
-  \item{col} {color}
+  \item{col}{color}
   \item{border}{border (see \code{\link[base]{polygon}})}
   \item{length, angle, code}{see the corresponding parameters for the
     function \code{\link{arrows}}}
