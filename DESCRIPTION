@@ -1,5 +1,5 @@
 Package: ecolitk
-Version: 1.17.0
+Version: 1.17.1
 Date: 2007-10
 Title: Meta-data and tools for E. coli
 Author: Laurent Gautier
@@ -10,5 +10,5 @@ Suggests: graph, matchprobes, multtest, vsn
 Description: Meta-data and tools to work with E. coli. The tools are
         mostly plotting functions to work with circular genomes. They
         can used with other genomes/plasmids.
-License: GPL version 2 or newer
+License: GPL (>= 2)
 
