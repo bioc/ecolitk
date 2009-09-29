@@ -33,7 +33,7 @@ polygonArc(theta0, theta1, radius.in, radius.out,
     (default to (0, 0))}
   \item{edges}{ number of edges the shape is made of }
   \item{col}{color}
-  \item{border}{border (see \code{\link[base]{polygon}})}
+  \item{border}{border (see \code{\link[graphics]{polygon}})}
   \item{length, angle, code}{see the corresponding parameters for the
     function \code{\link{arrows}}}
   \item{\dots}{ optional graphical paramaters}
