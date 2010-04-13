@@ -1,0 +1,9 @@
+import(methods)
+importFrom(Biobase, multiassign)
+importFrom(graphics, arrows, lines, plot.new, plot.window, points,
+           polygon, text, title)
+
+export(arrowsArc, chromPos2angle, cPlotCircle, ecoli.len, gccontent,
+       linesArc, linesChrom, linesCircle, linkedmultiget, pointsArc,
+       polar2xy, polygonArc, polygonChrom, polygonDisk, rotate,
+       wstringapply, xy2polar)

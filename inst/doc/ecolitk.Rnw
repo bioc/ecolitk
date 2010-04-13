@@ -1,7 +1,7 @@
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %\VignetteIndexEntry{ecolitk}
 %\VignetteKeywords{}
-%\VignetteDepends{ecolitk, Biobase, matchprobes, affy, ecoliLeucine, multtest, vsn}
+%\VignetteDepends{ecolitk, Biobase, multtest}
 %\VignettePackage{ecolitk}
 \documentclass[12pt]{article}
 
@@ -194,7 +194,7 @@ multifun <- mget(bnums, ecoligenomeBNUM2MULTIFUN, ifnotfound=NA)
 f <- function(x) {
   if (all(is.na(x)))
     return(FALSE)
-  length(grep("^1\\\.6", x) > 0)
+  length(grep("^1\\.6", x) > 0)
 }
 
 is.selected <- unlist(lapply(multifun, f))
@@ -217,7 +217,7 @@ display the GC content over a fragment of the genome.
 The fragment is decided to be of size $1$ million bases,
 with the origin of replication (base zero) in the middle
 of the fragment. We limit the size to lower the computing
-ressources needed to built this document and to demonstrate
+resources needed to built this document and to demonstrate
 how to perform something not so trivial.
 
 \begin{Scode}
@@ -268,7 +268,7 @@ base pairs.
 In procaryotes, some genes are {\it bundled} in operons. This means that
 a some genes are physically located near each others on the genome,
 and that they are transcribed\footnote{The {\it transcription} is the
-  copy of DNA into RNA} together. Complex mecanisms can regulate
+  copy of DNA into RNA} together. Complex mechanisms can regulate
 the translation\footnote{The {\it translation} is the making of a
 protein from RNA}. Microarrays are designed to measure the relative abundance
 of transcripts, therefore genes of the same operon should have the
